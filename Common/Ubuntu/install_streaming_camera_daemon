@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# this script installs avahi so when connected to the APSync AP you
+#  can "ssh apsync"
+
+if [ $(id -u) -ne 0 ]; then
+   echo >&2 "Must be run as root"
+   exit 1
+fi
+
+set -e
+set -x
+
+
+sudo apt-get install -y libgstrtspserver-0.10-0 libavahi-glib1 avahi-daemon libglib2.0-0
+
+pushd GitHub
+git clone https://github.com/01org/camera-streaming-daemon
+
+pushd camera-streaming-daemon
+git remote add https://github.com/otaviobp/camera-streaming-daemon
+git checkout remotes/otaviobp/fixes
+git submodule update --init
+
+./autogen.sh && ./configure CFLAGS='-g -O2' \
+			    --sysconfdir=/etc \
+			    --localstatedir=/var \
+			    --libdir=/usr/lib64 \
+			    --prefix=/usr
+make DESTDIR=~$NORMAL_USER/camera-streaming-daemon install
+popd
+popd
