@@ -8,17 +8,17 @@
 
 # Flash image onto SD card per instructions linked from that page
 # on linux this will look something like:
-# time (sudo dd if=2017-03-02-raspbian-jessie-lite.img of=/dev/sdb && sync)
+# time (sudo dd if=2017-07-05-raspbian-jessie-lite.img of=/dev/sdb && sync)
 # (~7 minutes)
 
 # Boot Raspberry Pi.
 
-# Log in on the RPi console and:
+# Log in on the RPi console (pi/raspberry) and:
 # enable ssh:
 sudo systemctl enable ssh
 sudo systemctl start ssh
 
-#Setup is easier if you can ssh into the vehicle from an existing
+# Setup is easier if you can ssh into the vehicle from an existing
 #  desktop environment.  Use the ethernet connection for this.
 
 # create an apsync user:
@@ -32,6 +32,11 @@ sudo raspi-config
 # navigate Interfacing Options -> P1 Camera
 # select yes and confirm, reboot
 
+# log back in as apsync/apsync
+
+# update apt repository metadata
+sudo apt-get update
+
 # install git
 sudo apt-get install -y git
 
@@ -44,14 +49,21 @@ git clone https://github.com/ArduPilot/companion
 pushd companion/RPI2/Raspbian || echo "Failed"
 sudo ./set-hostname   # reset the machine's hostname
 time sudo ./2_install_packages.sh || echo "Failed" # ~14m
-time sudo ./install_niceties || echo "Failed"
+time sudo ./install_niceties || echo "Failed" # 1m
 sudo ./2_setup_uart.sh || echo "Failed"
-time sudo ./2_use_networkmanager.sh || echo "Failed"
+time sudo ./2_use_networkmanager.sh || echo "Failed" # ~1m
 sudo reboot # network goes screwy after nm installed
+# authorize your identity on apsync:
+ssh-copy-id apsync
+# log back in again as apsync/apsync
+ssh apsync@apsync
 pushd GitHub/companion/RPI2/Raspbian || echo "Failed"
-time sudo ./3_wifi_access_point.sh || echo "Failed"
+time sudo ./3_wifi_access_point.sh || echo "Failed" # Failure expected!
 sudo reboot   # reboot required before AP will work
+# log back in again as apsync/apsync
+ssh apsync@apsync
 sudo nmcli connection up WiFiAP #  apparently required first time!
+# now might be a good time to attach to the "ardupilot" AP...
 pushd GitHub/companion/RPI2/Raspbian || echo "Failed"
 time sudo ./6_setup_cmavnode.sh || echo "Failed" # ~9m
 time sudo ./7_dflogger.sh || echo "Failed" # 13m
@@ -59,6 +71,8 @@ time sudo ./6_setup_video.sh || echo "Failed"  #31m
 time sudo ./setup_video_streaming || echo "Failed"  # 1m
 time sudo ./8_red_balloon_finder.sh || echo "Failed" # 18s
 time sudo ./5_setup_mavproxy.sh # 2s
+time sudo ./install_pymavlink # new version required for apweb # 17m
+time sudo ./install_apweb
 popd
 
 popd
@@ -72,7 +86,7 @@ sudo poweroff
 TIMESTAMP="$(date -u '+%Y%m%d%H%M%S')"
 FILENAME="apsync-rpi-$TIMESTAMP.img"
 DEVICE=/dev/sdc
-time (sudo dd if=$DEVICE of=$FILENAME) # ~1G/minute
+time (sudo dd if=$DEVICE of=$FILENAME status=progress) # ~1G/minute
 date; time xz --verbose -e "$FILENAME"  #~47m
 COMPRESSED="$FILENAME.xz"
 ls -l --si "$COMPRESSED" # ~870MB
