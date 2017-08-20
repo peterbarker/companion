@@ -14,4 +14,10 @@ Release 201703
 Release NEXT
  - Runs on Pi0W, however the shortage of memory makes it a poor development platform
  - APWeb (https://github.com/ardupilot/APWeb/) runs on port 80
+ - RPI image created from 2017-07-05-raspbian-jessie-lite.zip
+ - still no BeagleBoneBlue release due to performance questions 
+
+Ask people if they would update their bootloader
+ - at the risk of needing JTAG to recover their boards
+ - but with the possibility of updating their PixHawk over serial
  
