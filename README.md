@@ -23,3 +23,23 @@ Root
 
 * [Companion Computers](http://ardupilot.org/dev/docs/companion-computers.html) (Dev Wiki)
 * [Gitter chat](https://gitter.im/ArduPilot/companion)
+
+
+
+## Roadmap
+
+201708
+  APWeb
+
+2017-PRIME
+  SmartShots
+  Allow flashing of firmware via APWeb
+    Will require users to reflash their bootloader
+
+2017-PRIMEPRIME
+  CUAV
+
+2017-PRIMEPRIMEPRIME
+  Multi-Camera-Daemon
+  Graph multiple sensors in Calibration screen
+  OpenKAI
