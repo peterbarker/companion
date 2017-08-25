@@ -1,35 +1,38 @@
 # TX1 setup script for use as companion computer
 
-# STEP1 : install NVidia image onto TX1 (skip this step if you already have a factory image (created in Step2) for the current release of JetPack
+# STEP1: Run ONE of STEP1A or STEP1B
+
+# STEP1a : install NVidia image onto TX1 (skip this step if you already have a factory image (created in Step2) for the current release of JetPack
 #
 # Connect TX1 via USB to Ubuntu machine and put TX1 into bootloader mode:
 #    Hold Force Recovery button (aka "REC"), press Reset button(aka "RST"), Release Force Recovery button
 #    On Ubuntu machine "lsusb", and look for "NVidia Corp"
 #
-# Install JetPack on an Ubuntu 14.04 machine, while connected to the internet:
-# mkdir JetPack-2.3.1
-# download https://developer.nvidia.com/embedded/dlc/jetpack-l4t-2_3_1 (nvidia login required)
-# from the directory you want JetPack installed into (i.e. JetPack-2.3.1) run "sh ./JetPack-L4T-2.3.1-linux-x64.run"
+# Install JetPack on an Ubuntu 16.04 machine (a Vagrantfile has been supplied!), while connected to the internet:
+# mkdir JetPack-3.1
+# cd JetPack-3.1
+# download https://developer.nvidia.com/embedded/dlc/jetpack-l4t-3_1 (nvidia login required)
+# from the directory you want JetPack installed into (i.e. JetPack-3.1) run "sh ./JetPack-L4T-2.3.1-linux-x64.run".  This must not be in /vagrant.
+#  -  may need to run it twice to ge tthe GIU to actualy run
+# then run sudo _installer/Launcher
 #    select Jetson TX1 Development Kit and Ubuntu Host
 #    On JetPack L4T Component Manager:
 #        - Custom
-#        * Common: no action
-#        * CUDA Toolkit for Ubuntu 14.04: no action
-#        * OpenCV for Tegra on Ubuntu 14.04: no action
-#        * For Jetson TX1 64bit: mixed
+#        * Host: set "no action" for everything
+#        * Target - Jetson TX1: mixed
 #           * Linux for Tegra (TX1 64bit): install
-#              * Driver for OS: install
-#              * File System: install
-#        * Post Install: mixed
-#           * Flash OS: install
+#              * File System and OS: install
+#              * Drivers: install
+#           * Flash OS Image to Target: install
+#        Install on Target
 #           * CUDA Toolkit for L4T: install
 #           * Compile CUDA Samples: no action
 #           * PerfKit: install
-#           * TensorRT(GIE 1.0 RC): install
+#           * TensorRT: install
 #           * Multimedia API package: no action
 #           * cuDNN Package: install
 #           * OpenCV for Tegra: install
-#        * VisionWorks on TX1 Target: no action
+#        * VisionWorks Pack: no action
 #    Click Next, and Accept All
 #    "Network Layout" screen should appear:
 #       Select "Device accesses Internet via router/switch", Next
@@ -37,42 +40,52 @@
 #       when "Post Installation Jetson TX1, Following actions will be performed at this stage.." screen appears click Next
 #    Black screen, "Please put your device to Force USB Recovery Mode", press <Enter>
 #       Eventually, "Finished Flashing OS, Please press Reset button on device, Press Enter key to continue" will be displayed, press <Enter>
-#
+#    Note at this point the IP address may not be reported corectly to the host machine; the report-ip-script does not handle multi-homed hosts very well.  I logged into the newlf-yflashed Tegra and hacked the script to ping the correct address.  Use sudo to run the script.
+
 # STEP1B: if you want to re-use a factory image (e.g. one downloaded in STEP2):
 #   (possibly bring up Vagrant virtual machine)
-TEGRAFLASH=~/64_TX1/Linux_for_Tegra_64_tx1/bootloader/tegraflash.py
+BASE=~/jetpack_install
+TEGRAFLASH=$BASE/64_TX1/Linux_for_Tegra_64_tx1/bootloader/tegraflash.py
 ls $TEGRAFLASH
-APPLET=~/64_TX1/Linux_for_Tegra_64_tx1/bootloader/nvtboot_recovery.bin
+APPLET=$BASE/64_TX1/Linux_for_Tegra_64_tx1/bootloader/nvtboot_recovery.bin
 ls $APPLET
-CBOOT=/vagrant/image-factory-20170112/cboot.bin
+CBOOT=$BASE/64_TX1/Linux_for_Tegra_64_tx1/bootloader/cboot.bin
 ls $CBOOT
-IMAGE_NAME="/vagrant/image-factory-20170112/image_jetpack_factory.img" # (e.g.)
-IMAGE_NAME="apsync-tx1-$TIMESTAMP.img" # (e.g.)
+TIMESTAMP="$(date '+%Y%m%d')"
+IMAGE_NAME="/vagrant/image-factory-$TIMESTAMP/image_jetpack_factory.img" # (e.g.)
+# IMAGE_NAME="apsync-tx1-$TIMESTAMP.img" # (e.g.)
 ls $IMAGE_NAME
 sudo $TEGRAFLASH --bl $CBOOT --applet $APPLET --chip 0x21 --cmd "write APP $IMAGE_NAME"  # about 60m
-#
+
+
 # STEP2 : Download base image from TX1 (e.g. if you want to take a copy of the factory image)
 #    put TX1 into bootloader mode: Hold Force Recovery button (aka "REC"), press Reset button(aka "RST"), Release Force Recovery button
-#    cd to directory where JetPack was installed (i.e. JetPack-2.3.1)
+#    cd to directory where JetPack was installed (i.e. JetPack-3.1)
 #    cd 64_TX1/Linux_for_Tegra_64_tx1/bootloader
-#    copy in download_image.sh from this repo
-#    ./download_image.sh tx1_image_jetpack231_factory.img    <-- image will be saved to this file.  this will take about 1hour and 40 minutes
-#
+#    run download_image.sh from this repo
+REPO=/vagrant # (e.g.)
+IMAGE=/vagrant/tx1_image_jetpack31_factory.img
+$REPO/download_image.sh $IMAGE  #  <-- image will be saved to this file.  this will take about 1hour and 40 minutes
+
+
 # Step 3 : install packages on TX1
 #    power on the TX1
-#    log onto TX1 as ubuntu/ubuntu (you may be able to do this over ethernet using the tegra-ubuntu hostname)
+#    log onto TX1 as nvidia/nvidia (you may be able to do this over ethernet using the tegra-ubuntu hostname)
 #    create an apsync user:
 sudo useradd -s /bin/bash -m -U -G sudo,netdev,users,dialout,video apsync
 sudo passwd apsync # apsync
+logout
+# think about doing ssh-copy-id apsync@...
 #    ssh in as apsync, or switch-user to apsync
 #    open terminal
-for x in cuda-l4t jetson_clocks.sh OpenCV4Tegra  tegrastats; do
-  sudo mv /home/ubuntu/$x /home/apsync
+for x in cuda-l4t cudnn jetson_clocks.sh OpenCV4Tegra  tegrastats; do
+  sudo mv /home/nvidia/$x /home/apsync
   sudo chown -R apsync.apsync /home/apsync/$x
 done
 
 # change default login user for GUI to apsync:
-sudo perl -pe 's/ubuntu/apsync/' -i /etc/lightdm/lightdm.conf.d/50-nvidia.conf
+sudo perl -pe 's/nvidia/apsync/' -i /usr/share/lightdm/lightdm.conf.d/50-ubuntu.conf
+sudo perl -pe 's/ubuntu/apsync/' -i /usr/share/lightdm/lightdm.conf.d/50-ubuntu.conf
 
 cd ~
 mkdir GitHub
@@ -80,18 +93,25 @@ pushd GitHub
 git clone https://github.com/ArduPilot/companion.git
 pushd companion/Nvidia_JTX1/Ubuntu
 sudo ./set-hostname   # reset the machine's hostname
+sudo apt-get autoremove -y # avoid repeated no-longer-required annoyance
 sudo ./remove-unattended-upgrades # 
 sudo ./ensure_rc_local.sh
 sudo ./disable_console.sh
-time sudo ./2_install_packages.sh
-time sudo ./install_niceties || echo "Failed"
-time sudo ./3_wifi_access_point.sh
+time sudo ./2_install_packages.sh # ~26m
+time sudo ./install_niceties || echo "Failed" # 13s
+time sudo ./3_wifi_access_point.sh # 16s
 sudo ./4_setup_log_rotation
-time sudo ./6_setup_video.sh
+time sudo ./6_setup_video.sh # 57s
 time sudo ./8_setup_cmavnode.sh # ~4m
 time sudo ./7_dflogger.sh # ~210s
-sudo ./5_setup_mavproxy.sh
+time sudo ./5_setup_mavproxy.sh # 0s
 time sudo ./setup-video-streaming # 11s
+time sudo apt-get install -y libxml2-dev libxslt1.1 libxslt1-dev
+time sudo pip install future lxml # 4m
+time sudo ./install_pymavlink # new version required for apweb # 5m
+time sudo ./install_apweb # 2m
+time sudo ./install_apsync_autologin
+
 
 # reboot and test image according to testing.txt
 sudo reboot
