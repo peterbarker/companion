@@ -8,6 +8,7 @@
 
 # Flash image onto SD card per instructions linked from that page
 # on linux this will look something like:
+# NOTE: make sure you use a 4GB card!
 # time (sudo dd if=2017-07-05-raspbian-jessie-lite.img of=/dev/sdb && sync)
 # (~7 minutes)
 
@@ -76,6 +77,9 @@ time sudo ./install_apweb
 popd
 
 popd
+
+# set the flag to resize the filesystem on next boot:
+
 
 # test image by following testing.txt
 
