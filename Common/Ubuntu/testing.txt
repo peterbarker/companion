@@ -42,5 +42,63 @@ mavproxy.py --mav10 --master :14550
 
 
 # web interface testing
- Ensure you get a response when connecting to http://apsync/
+  Ensure you get a response when connecting to http://apsync/
+  Click "Download DataFlash Logs"
+    Download a dataflash log
+    Ensure sizes match on download file and original
+      Check checksums on files match
  
+  Click "FileSystem Access"
+    Ensure you can download a file
+
+  Click "System Control" link
+   Change WiFi access point name and key
+   Reboot Device
+   Make sure you can connect to renamed AP
+
+  Click "Ssytem Control" link
+     Test "Reboot Flight Board"
+     Test "Reboot CC"
+
+  Click "System Status" link
+    Click "System" tab
+      Ensure values are updating
+      Adjust refresh rate
+        Ensure values are updating faster
+
+    Click "IMU" tab
+      Ensure graphs respond to flight controller movement
+      Ensure tables respond to flight controller movement
+      
+    Click "Baro" tab
+      (n.b.) Rover doesn't supply Baro data
+      Ensure graphs respond to flight controller movement
+      Ensure tables respond to flight controller movement
+  
+    Click "GPS" tab
+      Ensure table values are updating
+  
+    Click "EKF" tab
+      Ensure values are updating
+      
+    Click "Transmitter" tab
+      Ensure values are updating
+  
+  Click "Calibration" link
+
+    Click "Accelerometer" tab
+      Click "Start Six Axis Accelerometer Calibration"
+        Should ge a message to place vehicle level
+      Ensure values for sensor state are updating
+
+    Click "Magetometer" tab
+      Click "Start Magnetometer Calibration"
+        Should get a message, calibration started"
+      Ensure sensor state values are updating
+
+  Click "Flight Parameters" link
+    Change "Parameter Category" dropdown, ensure list of parameter is reduced
+    Add an entry into the "Search parameters" box, ensure list is filtered appopriately
+    Change a parameter value to something distinct
+    Reboot the flight controller and reload the page, ensure the parameter value has stuck (or use a GCS to check)
+    

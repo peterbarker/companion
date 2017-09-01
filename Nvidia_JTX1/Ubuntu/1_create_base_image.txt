@@ -64,9 +64,11 @@ sudo $TEGRAFLASH --bl $CBOOT --applet $APPLET --chip 0x21 --cmd "write APP $IMAG
 #    create an apsync user:
 sudo useradd -s /bin/bash -m -U -G sudo,netdev,users,dialout,video apsync
 sudo passwd apsync # apsync
+logout
+# consider:   ssh-copy-id apsync@tegra-ubuntu
 #    ssh in as apsync, or switch-user to apsync
 #    open terminal
-for x in cuda-l4t jetson_clocks.sh OpenCV4Tegra  tegrastats; do
+for x in cuda-l4t cudnn jetson_clocks.sh OpenCV4Tegra  tegrastats; do
   sudo mv /home/ubuntu/$x /home/apsync
   sudo chown -R apsync.apsync /home/apsync/$x
 done
