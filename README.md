@@ -25,10 +25,6 @@ Root
 * [Gitter chat](https://gitter.im/ArduPilot/companion)
 
 
-Show Password needs help
-rol" page (http://10.0.1.128/apsync/system.html) produces a 404 error
-direct link to dataflash logs
-
 ## Roadmap
 
 201708
@@ -38,12 +34,22 @@ direct link to dataflash logs
   SmartShots
   Allow flashing of firmware via APWeb
     Will require users to reflash their bootloader
- Change username/password to ardupilot/ardupilot?
+  Change username/password to ardupilot/ardupilot?
+  Get GPS accuracies into place
 
 2017-PRIMEPRIME
+  APWeb to drop privs
   CUAV
+  Multipe IMUs on system tab
+  Reinstate Map tab
+  Reinstate motor-test tab
+
 
 2017-PRIMEPRIMEPRIME
   Multi-Camera-Daemon
   Graph multiple sensors in Calibration screen
   OpenKAI
+
+2018-?
+  Support for returning password in system.html
+    - requires TX1's Ubuntu to have an nmcli that supports -s properly
