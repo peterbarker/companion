@@ -9,19 +9,29 @@ Testing regime for new image:
 # ssh into device
 ssh apsync@10.0.1.128
 
-# Check "screen -list" includes cmavnode, DataFlashLogger:
+# Check "screen -list" includes cmavnode, DataFlashLogger, cherrypy:
 screen -list
+
+apsync@apsync:~ $ screen -list
+There are screens on:
+	758.cherrypy	(07/09/17 01:44:01)	(Detached)
+	727.DataFlashLogger	(07/09/17 01:44:01)	(Detached)
+	713.cmavnode	(07/09/17 01:44:01)	(Detached)
+3 Sockets in /run/screen/S-apsync.
+apsync@apsync:~ $ 
+
 
 # ensure mavproxy starts on the apsync image:
 mavproxy.py --master :14550
+
+# Can you connect using a GCS using the broadcast packets on port 14550?
+# on host machine:
+mavproxy.py --mav10 --master :14550
 
 # make sure dflogger is creating dataflash logs:
 # arm the vehcile, then:
 watch ls dflogger/dataflash -l
 
-# Can you connect using a GCS using the broadcast packets on port 14550?
-# on host machine:
-mavproxy.py --mav10 --master :14550
 
 # can you connect to to the AP using a mobile phone and/or tablet?
 
@@ -42,7 +52,7 @@ mavproxy.py --mav10 --master :14550
 
 
 # web interface testing
-  Ensure you get a response when connecting to http://apsync/
+  Ensure you get a response when connecting to http://10.0.1.128/
   Click "Download DataFlash Logs"
     Download a dataflash log
     Ensure sizes match on download file and original
@@ -91,7 +101,7 @@ mavproxy.py --mav10 --master :14550
         Should ge a message to place vehicle level
       Ensure values for sensor state are updating
 
-    Click "Magetometer" tab
+    Click "Magnetometer" tab
       Click "Start Magnetometer Calibration"
         Should get a message, calibration started"
       Ensure sensor state values are updating
