@@ -9,7 +9,7 @@
 # Flash image onto SD card per instructions linked from that page
 # on linux this will look something like:
 # NOTE: make sure you use a 4GB card!
-# time (sudo dd if=2017-08-16-raspbian-stretch-lite.img of=/dev/sdb && sync)
+# time (sudo dd status=progress if=2017-08-16-raspbian-stretch-lite.img of=/dev/sdb && sync)
 # (~7 minutes)
 
 # Boot Raspberry Pi.
@@ -89,7 +89,7 @@ sudo poweroff
 TIMESTAMP="$(date -u '+%Y%m%d%H%M%S')"
 FILENAME="apsync-rpi-$TIMESTAMP.img"
 DEVICE=/dev/sdc
-time (sudo dd if=$DEVICE of=$FILENAME status=progress) # ~1G/minute
+time (sudo dd status=progress if=$DEVICE of=$FILENAME status=progress) # ~1G/minute
 date; time xz --verbose -e "$FILENAME"  #~47m
 COMPRESSED="$FILENAME.xz"
 ls -l --si "$COMPRESSED" # ~870MB
