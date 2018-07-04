@@ -12,6 +12,10 @@ killall -9 cmavnode mavproxy.py dataflash_logger || true
 
 rm -f $HOME/.bash_history
 rm -f /home/$NORMAL_USER/.bash_history
+find / -name mav.parm -print0 | xargs -0 rm
+find / -name mav.tlog -print0 | xargs -0 rm
+find / -name mav.tlog.raw -print0 | xargs -0 rm
+rm -f /home/$NORMAL_USER/mav{.parm,.tlog{,.raw}}
 rm -f /home/$NORMAL_USER/mav{.parm,.tlog{,.raw}}
 rm -f /home/$NORMAL_USER/.ssh/authorized_keys
 rm -f /home/$NORMAL_USER/dflogger/dataflash/*
