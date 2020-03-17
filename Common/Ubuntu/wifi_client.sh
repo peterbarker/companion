@@ -18,3 +18,6 @@ nmcli connection modify $CLIENTNAME 802-11-wireless.mode infrastructure
 nmcli connection modify $CLIENTNAME wifi-sec.key-mgmt wpa-psk
 nmcli connection modify $CLIENTNAME 802-11-wireless-security.auth-alg open
 nmcli connection modify $CLIENTNAME wifi-sec.psk "$KEY"
+nmcli connection modify $CLIENTNAME connection.autoconnect-priority 5
+
+echo 'if [ -e /etc/NetworkManager/system-connections/WiFiClient ] && ! grep swordfish /etc/NetworkManager/system-connections/WiFiClient; then nmcli c u WiFiClient; fi' >>/etc/rc.local

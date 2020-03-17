@@ -22,7 +22,7 @@ ln -s /vagrant/jetpack_download
 
 # Consider exporting a http_proxy environment variable
 # e.g. export http_proxy="http://bogg.local:3128"
-# sh /vagrant/JetPack-L4T-3.2-linux-x64_b196.run
+sh /vagrant/JetPack-L4T-3.3-linux-x64_b39.run
 # _installer/Launcher
 #    On installation configuration, consider changing download directory to something persistent e.g. /vagrant/jetpack_download
 #    select Jetson TX2
@@ -161,13 +161,13 @@ sudo poweroff
 watch lsusb
 BASEDIR=~/jetpack
 L4T=$BASEDIR/64_TX2/Linux_for_Tegra
-#    run download_image.sh from this repo:
 TIMESTAMP=`date '+%Y%m%d%H%M'`
 # consider using an absolute path for IMAGE_NAME here! e.g. /vagrant/...
 IMAGE_NAME="/vagrant/apsync-tx2-$TIMESTAMP.img"
 
-cd $L4T
+pushd $L4T
 time sudo ./flash.sh -r -k APP -G $IMAGE_NAME jetson-tx2 mmcblk0p1 # about 30 minutes
+popd
 
 # on host machine (not on the Vagrant VM!)
 ls -l $IMAGE_NAME # about 8GB

@@ -23,3 +23,8 @@ rm -f /home/$NORMAL_USER/start*/screenlog.0
 rm -f /home/$NORMAL_USER/start*/start_*.log
 apt-get autoremove -y
 apt-get clean
+
+# purge information from NetworkManager config:
+CONFIG=/etc/NetworkManager/system-connections/WiFiClient
+perl -pe 's/psk=.*/psk=swordfish/' -i $CONFIG
+perl -pe 's/ssid=.*/ssid=my-home-network/' -i $CONFIG
