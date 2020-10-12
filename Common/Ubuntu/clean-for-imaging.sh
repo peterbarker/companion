@@ -8,7 +8,7 @@ fi
 set -e
 set -x
 
-killall -9 cmavnode mavproxy.py dataflash_logger || true
+killall -9 mavlink-router cmavnode mavproxy.py dataflash_logger || true
 
 rm -f $HOME/.bash_history
 rm -f /home/$NORMAL_USER/.bash_history
