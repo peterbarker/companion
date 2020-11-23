@@ -14,6 +14,4 @@ pushd /home/$NORMAL_USER/GitHub/companion/Common/Ubuntu/librealsense
 time ./install_librealsense.sh
 popd
 
-tput setaf 2
-echo 'Success! Finished part 7: installing Intel Realsense Drivers'
-tput sgr0
+progress 'Success! Finished part 7: installing Intel Realsense Drivers'

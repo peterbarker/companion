@@ -10,20 +10,14 @@ set -x
 
 . config.env
 
-tput setaf 3
-echo "Part 3 of apsync installation"
-tput sgr0
+progress "Part 3 of apsync installation"
 
 pushd /home/$NORMAL_USER/GitHub/companion/Up_Squared/Ubuntu
 
-tput setaf 3
-echo "removing modem manager"
-tput sgr0
+progress "removing modem manager"
 apt remove modemmanager
 
-tput setaf 3
-echo "installing avahi-daemon"
-tput sgr0
+progress "installing avahi-daemon"
 apt install avahi-daemon -y
 
 # install packages common to all
@@ -35,7 +29,5 @@ pushd /home/$NORMAL_USER/GitHub/companion/Common/Ubuntu
 time ./install_niceties
 popd
 
-tput setaf 2
-echo "Success! Finished part 3"
-tput sgr0
+progress "Success! Finished part 3"
 

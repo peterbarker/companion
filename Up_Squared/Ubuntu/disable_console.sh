@@ -10,9 +10,7 @@ set -x
 
 . config.env
 
-tput setaf 3
-echo "Disabling Serial Console to ttyS0"
-tput sgr0
+progress "Disabling Serial Console to ttyS0"
 
 systemctl mask serial-getty@ttyS0.service
 

@@ -10,9 +10,7 @@ set -x
 
 . config.env
 
-tput setaf 3
-echo "Setting up rc.local"
-tput sgr0
+progress "Setting up rc.local"
 
 if [ ! -f /etc/rc.local ]; then
     cat >/etc/rc.local <<EOF

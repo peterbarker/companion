@@ -5,9 +5,7 @@ if [ $(id -u) -ne 0 ]; then
    exit 1
 fi
 
-tput setaf 3
-echo "Installing mavlink-router master branch"
-tput sgr0
+progress "Installing mavlink-router master branch"
 
 . config.env
 
@@ -44,9 +42,7 @@ popd
 
 EOF
 
-tput setaf 3
-echo "Setting up mavlink-router service"
-tput sgr0
+progress "Setting up mavlink-router service"
 
 rm -rf /etc/mavlink-router
 mkdir /etc/mavlink-router

@@ -10,20 +10,14 @@ set -x
 
 . config.env
 
-tput setaf 3
-echo "Part 3 of apsync installation"
-tput sgr0
+progress "Part 3 of apsync installation"
 
 pushd /home/$NORMAL_USER/GitHub/companion/RPI2/Ubuntu
 
-tput setaf 3
-echo "removing modem manager"
-tput sgr0
+progress "removing modem manager"
 apt remove modemmanager
 
-tput setaf 3
-echo "removing cloud-init"
-tput sgr0
+progress "removing cloud-init"
 apt remove cloud-init
 
 tput setaf 3

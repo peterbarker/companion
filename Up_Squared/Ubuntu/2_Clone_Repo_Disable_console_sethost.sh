@@ -10,31 +10,19 @@ set -x
 
 . config.env
 
-tput setaf 3
-echo "Cloning Companion Repo"
-tput sgr0
-
 pushd /home/$NORMAL_USER/GitHub/companion/Up_Squared/Ubuntu
 
-tput setaf 3
-echo "Running Scripts"
-tput sgr0
+progress "Running Scripts"
 
-tput setaf 3
-echo "Setting Hostname to apsync"
-tput sgr0
+progress "Setting Hostname to apsync"
 ./set_hostname.sh   # reset the machine's hostname
 
-tput setaf 3
-echo "Removing unused packages"
-tput sgr0
+progress "Removing unused packages"
 apt autoremove -y # avoid repeated no-longer-required annoyance
 
 apt-get remove -y unattended-upgrades
 
-tput setaf 3
-echo "Setting up rc.local"
-tput sgr0
+progress "Setting up rc.local"
 ./ensure_rc_local.sh
 
 # tput setaf 3

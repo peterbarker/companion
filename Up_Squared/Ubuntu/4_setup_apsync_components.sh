@@ -43,7 +43,4 @@ pushd /home/$NORMAL_USER/GitHub/companion/Common/Ubuntu/apweb
 time ./install_apweb # 2m
 popd
 
-tput setaf 2
-echo "Success! Finished part 4"
-tput sgr0
-popd
+progress "Success! Finished part 4"

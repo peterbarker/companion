@@ -14,10 +14,8 @@ pushd /home/$NORMAL_USER/GitHub/companion/Common/Ubuntu/vision_to_mavros
 time ./install_vision_to_mavros.sh
 popd
 
-tput setaf 2
 if [ $SETUP_DEPTH_CAMERA -eq 1 ]; then
-   echo 'Success! Finished part 8: installing vision_to_mavros Pose and Depth Scripts'
+   progress 'Success! Finished part 8: installing vision_to_mavros Pose and Depth Scripts'
 else
-   echo 'Success! Finished part 8: installing vision_to_mavros Pose Script'
+   progress 'Success! Finished part 8: installing vision_to_mavros Pose Script'
 fi
-tput sgr0
