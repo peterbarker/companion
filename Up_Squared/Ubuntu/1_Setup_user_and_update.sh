@@ -25,6 +25,7 @@ echo "$NORMAL_USER:$NORMAL_USER" | chpasswd
 pushd /home/$STD_USER
 rsync -aPH --delete /home/$STD_USER/ /home/$NORMAL_USER
 chown -R $NORMAL_USER.$NORMAL_USER /home/$NORMAL_USER
-rm -rf *
+rm -rf /home/$STD_USER/*
+popd
 
 progress "Finished part 1 of APSync install, please logout and then log back in using apsync user, password apsync"
