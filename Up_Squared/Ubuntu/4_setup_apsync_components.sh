@@ -12,6 +12,7 @@ set -x
 
 pushd /home/$NORMAL_USER/GitHub/companion/Up_Squared/Ubuntu
 time ./setup_mavlink_router.sh
+popd
 
 pushd /home/$NORMAL_USER/GitHub/companion/Common/Ubuntu/dflogger/
 time ./install_dflogger # ~210s
