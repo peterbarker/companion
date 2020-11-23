@@ -25,18 +25,9 @@ apt-get remove -y unattended-upgrades
 progress "Setting up rc.local"
 ./ensure_rc_local.sh
 
-# tput setaf 3
-# echo "Disabling TTY console on serial port"
-# tput sgr0
+# progress "Disabling TTY console on serial port"
 # ./disable_console.sh
 
-tput setaf 2
-echo "Success! Finished part 2"
-tput sgr0
+progress "Success! Finished part 2"
 
-tput setaf 2
-echo "Rebooting in 5 sec to Finish changes"
-tput sgr0
-
-sleep 5
-reboot # ensure hostname correct / console disabling OK / autologin working
+progress "Reboot to check changes"
