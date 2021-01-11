@@ -48,5 +48,6 @@ rm -rf /etc/mavlink-router
 mkdir /etc/mavlink-router
 
 cp mavlink-router.conf /etc/mavlink-router/main.conf
+perl -pe 's%/dev/ttyUSB0%$TELEM_SERIAL_PORT%' -i /etc/mavlink-router/main.conf
 systemctl enable mavlink-router.service
 systemctl start mavlink-router.service
