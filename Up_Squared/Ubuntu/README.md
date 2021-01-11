@@ -18,7 +18,7 @@ The **hardware** components include:
 
 The **software** components on the companion computer include:
 - Automatically creates a Wifi Access Point on startup,
-- Automatically runs a light weight webserver which allows the user to connect to the drone using a known URL and perform various actions,
+- Automatically runs a light-weight webserver which allows the user to connect to the drone using a known URL and perform various actions,
 - Automatically launch the `t265_to_mavlink.py` and `d4xx_to_mavlink.py` scripts,
 - Real-time video streaming of the RGB image from the Realsense camera on the drone to the ground station.
 
@@ -32,14 +32,16 @@ The general instructions can be found [here](https://wiki.up-community.org/Ubunt
 
 - Download the [Ubuntu LTS image](https://releases.ubuntu.com/). 18.04 is the recommended image.
 
-- Burn the image onto a USB flash drive using [Balena Etcher](https://www.balena.io/etcher/) or [Win32DiskImager](https://wiki.ubuntu.com/Win32DiskImager).
-
-> Note: these instructions require at least an 8GB USB. If building an image for general, use an 8GB USB so that the final image is kept as small as possible.
+- Burn the image onto a USB flash drive using [Balena Etcher](https://www.balena.io/etcher/) or [Win32DiskImager](https://wiki.ubuntu.com/Win32DiskImager).  On an Ubuntu desktop, try, "Startup Disk Creator"
 
 - Provide network connection to the UP2, either with ethernet cable / USB wifi dongle / wifi adapter card.
 
 - Insert the USB in an empty port of the UP2. Boot up the UP2 and follow the normal Ubuntu installation.
- - In all of the follow-up sections, we assume the login username/password is `up2/ubuntu`. If you use a different username, change `STD_USER` accordingly in the `config.env` file.
+  - minimal installation
+  - install 3rd party graphics and network software
+  - use username/password/hostname up2/ubuntu/up2
+   - In all of the follow-up sections, we assume the login username/password is `up2/ubuntu`. If you use a different username, change `STD_USER` in the `config.env` file.
+  - do NOT log in automatically; the apsync user might do that, but not this base up2 user.
 
 - Enable [SSH on Ubuntu 18.04](https://linuxize.com/post/how-to-enable-ssh-on-ubuntu-18-04/) on the UP2 itself. Monitor, keyboard + mouse, internet connection are required. 
   - Open a terminal and run:
@@ -53,39 +55,26 @@ The general instructions can be found [here](https://wiki.up-community.org/Ubunt
   sudo systemctl status ssh
   ```
 
-- Find out the ip-address of the UP2 by typing this command on the console (look for the number next to `inet`, which is `192.168.1.12` in this case):
+ssh into the UP2 from the host machine:
 ```console
-up2@up2:~$ ifconfig
-lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
-        inet 127.0.0.1  netmask 255.0.0.0
-        inet6 ::1  prefixlen 128  scopeid 0x10<host>
-        loop  txqueuelen 1000  (Local Loopback)
-        RX packets 234558  bytes 12730563 (12.7 MB)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 234558  bytes 12730563 (12.7 MB)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-
-wlxe0b94d193b9e: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 192.168.1.12  netmask 255.255.255.0  broadcast 192.168.1.255
-        inet6 fe80::e1c2:9ae5:f488:e3c1  prefixlen 64  scopeid 0x20<link>
-        ether e0:b9:4d:19:3b:9e  txqueuelen 1000  (Ethernet)
-        RX packets 6078  bytes 804670 (804.6 KB)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 900  bytes 112286 (112.2 KB)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+ssh up2@up2.local
 ```
 
-With this ip address you can now ssh into the UP2 from the host machine:
-```console
-ssh up2@ip-address
-```
+> Note: if up2.local is not resolved into an IP address, run `ip addr show` on the up2 to find its address.
+
+## 3.5. Install extra drivers
+sudo add-apt-repository -y ppa:aaeon-cm/upboard
+sudo apt update
+sudo apt-get autoremove -y --purge 'linux-.*generic'  # force it if required...
+sudo apt-get install -y linux-generic-hwe-18.04-edge-upboard
+sudo reboot
 
 ## 4. Install the packages and other components
 
 - Once you log in, clone the companion repository:
 ```console
 sudo apt install git
-cd ~
+cd
 mkdir GitHub
 pushd GitHub
 git clone https://github.com/ardupilot/companion
@@ -96,7 +85,7 @@ git clone https://github.com/ardupilot/companion
 # - Change STD_USER to the current username
 # - Change SETUP_DEPTH_CAMERA=0 if not using depth camera
 # - NORMAL_USER should NOT be changed (apsync)
-pushd GitHub/companion/Up_Squared/Ubuntu
+pushd companion/Up_Squared/Ubuntu
 nano config.env
 
 # Serial connection
@@ -111,13 +100,16 @@ sudo ./1_Setup_user_and_update.sh
 
 - Reboot the UP2, log back in using the username/password `apsync/apsync`:
 ```console
-sudo reboot now
-ssh apsync@ip-address # SSH into the UP2 from the host computer
+sudo reboot
+ssh apsync@up2.local # SSH into the UP2 from the host computer
 pushd GitHub/companion/Up_Squared/Ubuntu
 sudo ./2_Clone_Repo_Disable_console_sethost.sh
 ```
 
-- The UP2 will automatically reboot. You need to log back in as `apsync` and run the rest of the scripts to complete the installation. For each script, I suggest skimming through to get the idea behind, decide whether it applies to your case and skip any deemed unnecessary.
+- The UP2 will automatically reboot.
+- The UP2 will change hostname to "apsync", so you need to log in using a different hostname:
+ssh apsync@apsync.local # SSH into the UP2 from the host computer
+- You need to log back in as `apsync` and run the rest of the scripts to complete the installation. For each script, I suggest skimming through to get the idea behind, decide whether it applies to your case and skip any deemed unnecessary.
 ```console
 pushd GitHub/companion/Up_Squared/Ubuntu
 sudo ./3_Setup_Network_and_Packages.sh  # Common packages and wifi hotspot
@@ -130,12 +122,13 @@ sudo ./8_setup_vision_to_mavros.sh      # vision_to_mavros scripts for T265 (def
 > Note: The installation of `librealsense` may take 2-3 hours to finish.
 
 - Setup the Wifi access point
+> Note: There is no on-board WiFi module on the Up-squared.  You will need a dongle capable of running in master-mode to set up an access point.
 ```console
-# First change IFNAME to your system's network interface (example: wlxe0b94d193b9e is my Wifi USB dongle)
-nano install_wifi_access_point.h
-# Then run the script to setup wifi hotspot
 sudo ./install_wifi_access_point.sh     # Setup a wifi hotspot with ssid/password ArduPilot/ardupilot
 ```
+
+- Reboot the device
+
 
 This completes the installation of AP Sync you are now ready to prepare the image for cloning.
 
@@ -172,3 +165,15 @@ rtspsrc location=rtsp://10.0.1.128:8554/d4xx caps=“application/x-rtp, media=(s
 ```
 - You should see the RGB image overlay on the HUD. Additionally, open the Proximity View (`Ctrl-F` > `Proximity`) to visualize the obstacle avoidance data.
   ![img](https://i.imgur.com/NtVY49b.png)
+
+
+## 6. Clean up ready for imaging
+
+... sudo ./clean-for-imaging.sh
+
+
+## 7. Create image
+ - create USB flash drive containing clonezilla
+  - https://clonezilla.org/liveusb.php
+- plug in *another* USB flash drive to contain image
+ - run through clonezilla to create image...
