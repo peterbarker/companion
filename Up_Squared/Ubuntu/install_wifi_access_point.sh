@@ -8,6 +8,8 @@ fi
 set -e
 set -x
 
+. config.env
+
 # this script sets up the wifi access point
 
 # NOTE: if something goes wrong with this setup, and you are unable to connect to the TX1, connect a keyboard and mouse and type "sudo dhclient eth0"
@@ -18,10 +20,13 @@ apt-get -y install wpasupplicant
 sudo systemctl disable dnsmasq
 
 # Create Access Point
+APNAME="HotSpot"
 SSID="ArduPilot"
 KEY="ardupilot"
-# IFNAME=wlan0
-IFNAME=wlxe0b94d193b9e
+IFNAME="$WIFI_IFNAME"
+
+# ensure the interface exists (leans on set -e)
+ip a s "$IFNAME"
 
 # add IP address range to /etc/dnsmasq.conf
 dd of=/etc/dnsmasq.d/$APNAME.conf <<EOF
